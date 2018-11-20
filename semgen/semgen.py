@@ -104,8 +104,12 @@ class ModelWrapper:
     def __init__(self, semsimmodel):
         self.semsimmodel = semsimmodel
 
+
     @property
     def physical_entities(self):
+        '''
+        Get a list of all DataStructures which have a physical property or component.
+        '''
         results = []
         data_structures = self.semsimmodel.getAssociatedDataStructures()
         for ds in data_structures:
@@ -113,32 +117,70 @@ class ModelWrapper:
                 results.append(DataStructureWrapper(ds))
         return results
 
+
     def __getattr__(self, sym):
+        return self[sym]
+
+
+    def __getitem__(self, sym):
+        '''
+        Access a DataStructure in the model by name.
+        '''
         datastructure = self.semsimmodel.getDataStructureForName(sym)
         if datastructure is not None:
             return DataStructureWrapper(datastructure)
         raise KeyError('No method or datastructure for {}'.format(sym))
 
+
     def getSBML(self, base='model.xml'):
+        '''
+        Write out the model as SBML.
+        '''
         sbmlwriter = semsim.writing.SBMLwriter(semsimmodel, True)
         return sbmlwriter.encodeModelWithXMLBase(base)
 
+
+    def getCellML(self, base='model.xml'):
+        '''
+        Write out the model as CellML.
+        '''
+        cellmlwriter = semsim.writing.CellMLwriter(semsimmodel, True)
+        return cellmlwriter.encodeModelWithXMLBase(base)
+
+
     def getRDF(self, base='model.xml'):
+        '''
+        Get the model annotations as RDF.
+        '''
         sbmlwriter = semsim.writing.SBMLwriter(self.semsimmodel, True)
         sbmlstr = sbmlwriter.encodeModelWithXMLBase(base)
         return sbmlwriter.getRDFWriter().getRDFString()
 
+
     def get_turtle(self):
+        '''
+        Get the model annotations as Turtle RDF.
+        '''
         from rdflib import Graph
         g = Graph()
         g.parse(data=self.getRDF())
         return g.serialize(format='turtle').decode('utf8')
 
+
+
 def loadsbml(filename):
     from os.path import abspath
+    print('open file {}'.format(abspath(filename)))
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.SBMLreader(accessor).read())
+
+def loadcellml(filename):
+    from os.path import abspath
+    print('open file {}'.format(abspath(filename)))
+    java_file = gateway.jvm.java.io.File(abspath(filename))
+    accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
+    return ModelWrapper(semsim.reading.CellMLreader(accessor).read())
 
 def searchbp(term, ontology, n_results):
     query_engine = semsim.utilities.webservices.BioPortalSearcher()

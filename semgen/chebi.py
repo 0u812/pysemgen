@@ -9,7 +9,7 @@ root = identifiers_org_root+'chebi/'
 def make_chebi(t):
     return format_term(t,root,5)
 
-class ChEBI:
+class ChEBI(OntologyHelper):
     '''
     Ontology helper for Chemical Entities of Biological Interest (ChEBI).
     '''
