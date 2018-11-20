@@ -12,7 +12,7 @@ gateway = JavaGateway()
 semsim = gateway.jvm.semsim
 sslib = gateway.jvm.semsim.SemSimLibrary()
 
-class AnnotationWrapper:
+class AnnotationWrapper(object):
     def __init__(self, component):
         self.component = component
         # self.uris = []
@@ -100,7 +100,7 @@ class DataStructureWrapper:
 
 
 
-class ModelWrapper:
+class ModelWrapper(object):
     def __init__(self, semsimmodel):
         self.semsimmodel = semsimmodel
 

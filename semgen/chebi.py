@@ -2,9 +2,9 @@
 
 from __future__ import print_function, division, absolute_import
 
-from .ontology_base import identifiers_org_root, format_term
+from .ontology_base import OntologyHelper, identifiers_org_root, format_term
 
-root = identifiers_org_root+'chebi/'
+root = identifiers_org_root+'chebi/CHEBI:'
 
 def make_chebi(t):
     return format_term(t,root,5)
@@ -24,6 +24,8 @@ class ChEBI(OntologyHelper):
     NADH = make_chebi(16908) # or 57945 for charged version?
     NADP = make_chebi(18009) # NADP+
     NADPH = make_chebi(16474)
+
+ChEBI.register_aliases()
 
 
 # Herbert accessibility features

@@ -21,8 +21,38 @@ def format_term(term, base_uri, width):
         return base_uri + term
 
 
-class OntologyHelper:
+class OntologyHelper(object):
+    global_aliases = {}
+
     @classmethod
-    def helpers(cls):
+    def aliases(cls):
+        results = {}
         for a in dir(cls):
-            if not a.startswith('_') and isinstance(six.string_types)
+            if not a.startswith('_'):
+                uri = getattr(cls,a)
+                if isinstance(uri,string_types):
+                    results[uri] = '.'.join((cls.__name__,a))
+        return results
+
+
+    @classmethod
+    def register_aliases(cls):
+        OntologyHelper.global_aliases.update(cls.aliases())
+        print('registered aliases {}'.format(cls.aliases()))
+
+
+    @staticmethod
+    def alias(uri):
+        '''
+        Substitute an alias (if one exists) for an ontology term uri.
+        If an alias does not exist, return the original uri.
+        '''
+        if uri in OntologyHelper.global_aliases:
+            return OntologyHelper.global_aliases[uri]
+        return uri
+
+def humanize(uri):
+    '''
+    Substitutes an alias for the URI if one exists.
+    '''
+    return OntologyHelper.alias(uri)
