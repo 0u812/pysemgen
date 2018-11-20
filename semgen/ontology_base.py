@@ -38,7 +38,6 @@ class OntologyHelper(object):
     @classmethod
     def register_aliases(cls):
         OntologyHelper.global_aliases.update(cls.aliases())
-        print('registered aliases {}'.format(cls.aliases()))
 
 
     @staticmethod

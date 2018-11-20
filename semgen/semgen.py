@@ -170,14 +170,12 @@ class ModelWrapper(object):
 
 def loadsbml(filename):
     from os.path import abspath
-    print('open file {}'.format(abspath(filename)))
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.SBMLreader(accessor).read())
 
 def loadcellml(filename):
     from os.path import abspath
-    print('open file {}'.format(abspath(filename)))
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.CellMLreader(accessor).read())
