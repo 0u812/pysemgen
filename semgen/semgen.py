@@ -1,4 +1,8 @@
+# J Kyle Medley 2018
+
 from __future__ import print_function, division, absolute_import
+
+from . import bqb
 
 from os.path import dirname, realpath, join
 from py4j.java_gateway import JavaGateway
@@ -11,6 +15,7 @@ sslib = gateway.jvm.semsim.SemSimLibrary()
 
 class AnnotationWrapper:
     def __init__(self, component):
+        self.component = component
         self.uris = []
         if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
             for entity in component.getArrayListOfEntities():
@@ -18,10 +23,10 @@ class AnnotationWrapper:
                     self.uris.append(entity.getPhysicalDefinitionURI().toString())
                 except Py4JError:
                     for a in entity.getAnnotations():
-                        self.uris.append(entity.getValue().toString())
+                        self.uris.append(a.getValue())
         else:
-            for annotation in component.getAnnotations():
-                self.uris.append(annotation.getValueDescription())
+            for a in component.getAnnotations():
+                self.uris.append(a.getValue())
 
 
 
@@ -30,7 +35,7 @@ class DataStructureWrapper:
         self.datastructure = datastructure
         component = self.datastructure.getAssociatedPhysicalModelComponent()
         if component is not None:
-            self.annotation = AnnotationWrapper(component)
+            self._annotation = AnnotationWrapper(component)
 
 
     @property
@@ -46,6 +51,42 @@ class DataStructureWrapper:
     @property
     def metaid(self):
         return self.datastructure.getAssociatedPhysicalModelComponent().getMetadataID()
+
+
+    @property
+    def terms(self):
+        '''
+        Returns a series of tuples with a relation (usually a BioModels qualifier but not always)
+        and an ontology term.
+        '''
+        component = self.datastructure.getAssociatedPhysicalModelComponent()
+        if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
+            for entity in component.getArrayListOfEntities():
+                try:
+                    # see if it's a ReferenceTerm
+                    # if it is, then we use the bqb:is qualifier
+                    yield (bqb.bqb_is, entity.getPhysicalDefinitionURI().toString())
+                except Py4JError:
+                    for a in entity.getAnnotations():
+                        yield (a.getValue())
+        else:
+            for a in component.getAnnotations():
+                self.uris.append(a.getValue())
+
+
+    # @property
+    # def annotations(self):
+    #     component = self.datastructure.getAssociatedPhysicalModelComponent()
+    #     if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
+    #         for entity in component.getArrayListOfEntities():
+    #             try:
+    #                 yield (entity, entity.getPhysicalDefinitionURI().toString())
+    #             except Py4JError:
+    #                 for a in entity.getAnnotations():
+    #                     yield (entity, entity.getValue().toString())
+    #     else:
+    #         for annotation in component.getAnnotations():
+    #             yield annotation.getValueDescription()
 
 
 
