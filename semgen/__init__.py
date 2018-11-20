@@ -4,3 +4,5 @@ from .semgen import DataStructureWrapper, ModelWrapper
 from .semgen import loadsbml, searchbp
 
 from .chebi import ChEBI, chebi, CHEBI
+
+from .go import GO
