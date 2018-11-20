@@ -43,8 +43,13 @@ class AnnotationWrapper:
                 yield (a.getRelation().toString(), a.getValue())
 
 
+    def clear(self):
+        self.component.clearPhysicalEntities()
+
+
     def __iadd__(self, uri, desc=''):
-        self.component.getArrayListOfEntities().add(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(uri),desc))
+        # does this also need to be added to the model?
+        self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(uri),desc))
 
 
 
