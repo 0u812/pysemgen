@@ -12,21 +12,39 @@ gateway = JavaGateway()
 semsim = gateway.jvm.semsim
 sslib = gateway.jvm.semsim.SemSimLibrary()
 
-
 class AnnotationWrapper:
     def __init__(self, component):
         self.component = component
-        self.uris = []
-        if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
-            for entity in component.getArrayListOfEntities():
+        # self.uris = []
+        # if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
+        #     for entity in component.getArrayListOfEntities():
+        #         try:
+        #             self.uris.append(entity.getPhysicalDefinitionURI().toString())
+        #         except Py4JError:
+        #             for a in entity.getAnnotations():
+        #                 self.uris.append(a.getValue())
+        # else:
+        #     for a in component.getAnnotations():
+        #         self.uris.append(a.getValue())
+
+
+    def __iter__(self):
+        if self.component is not None and self.component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
+            for entity in self.component.getArrayListOfEntities():
                 try:
-                    self.uris.append(entity.getPhysicalDefinitionURI().toString())
+                    # see if it's a ReferenceTerm
+                    # if it is, then we use the bqb:is qualifier
+                    yield (bqb.bqb_is, entity.getPhysicalDefinitionURI().toString())
                 except Py4JError:
                     for a in entity.getAnnotations():
-                        self.uris.append(a.getValue())
+                        yield (a.getRelation().toString(), a.getValue()) # TODO: how to get the uri for a relation?
         else:
-            for a in component.getAnnotations():
-                self.uris.append(a.getValue())
+            for a in self.component.getAnnotations():
+                yield (a.getRelation().toString(), a.getValue())
+
+
+    def __iadd__(self, uri, desc=''):
+        self.component.getArrayListOfEntities().add(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(uri),desc))
 
 
 
@@ -35,7 +53,7 @@ class DataStructureWrapper:
         self.datastructure = datastructure
         component = self.datastructure.getAssociatedPhysicalModelComponent()
         if component is not None:
-            self._annotation = AnnotationWrapper(component)
+            self.terms = AnnotationWrapper(component)
 
 
     @property
@@ -53,25 +71,12 @@ class DataStructureWrapper:
         return self.datastructure.getAssociatedPhysicalModelComponent().getMetadataID()
 
 
-    @property
-    def terms(self):
-        '''
-        Returns a series of tuples with a relation (usually a BioModels qualifier but not always)
-        and an ontology term.
-        '''
-        component = self.datastructure.getAssociatedPhysicalModelComponent()
-        if component is not None and component.isType(semsim.definitions.SemSimTypes.COMPOSITE_PHYSICAL_ENTITY):
-            for entity in component.getArrayListOfEntities():
-                try:
-                    # see if it's a ReferenceTerm
-                    # if it is, then we use the bqb:is qualifier
-                    yield (bqb.bqb_is, entity.getPhysicalDefinitionURI().toString())
-                except Py4JError:
-                    for a in entity.getAnnotations():
-                        yield (a.getValue())
-        else:
-            for a in component.getAnnotations():
-                self.uris.append(a.getValue())
+    # @property
+    # def terms(self):
+    #     '''
+    #     Returns a series of tuples with a relation (usually a BioModels qualifier but not always)
+    #     and a resource which is either an ontology term or another element of the model.
+    #     '''
 
 
     # @property
@@ -118,7 +123,7 @@ class ModelWrapper:
         sbmlstr = sbmlwriter.encodeModelWithXMLBase(base)
         return sbmlwriter.getRDFWriter().getRDFString()
 
-    def getTurtle(self):
+    def get_turtle(self):
         from rdflib import Graph
         g = Graph()
         g.parse(data=self.getRDF())
