@@ -2,14 +2,18 @@
 
 from __future__ import print_function, division, absolute_import
 
-from .identifiers_org import identifiers_org_root
+from .ontology_base import identifiers_org_root, format_term
 
 root = identifiers_org_root+'chebi/'
 
-def make_chebi(n):
-    return root + '{:05}'.format(n)
+def make_chebi(t):
+    return format_term(t,root,5)
 
 class ChEBI:
+    '''
+    Ontology helper for Chemical Entities of Biological Interest (ChEBI).
+    '''
+
     def __new__(cls, n):
         return make_chebi(n)
 

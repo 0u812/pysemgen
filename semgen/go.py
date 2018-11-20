@@ -2,14 +2,18 @@
 
 from __future__ import print_function, division, absolute_import
 
-from .identifiers_org import identifiers_org_root
+from .ontology_base import identifiers_org_root, format_term
 
 root = identifiers_org_root+'obo.go/GO:'
 
-def make_go(n):
-    return root + '{:07}'.format(n)
+def make_go(t):
+    return format_term(t,root,7)
 
 class GO:
+    '''
+    Ontology helper for the Gene Ontology (GO).
+    '''
+
     def __new__(cls, n):
         return make_go(n)
 
