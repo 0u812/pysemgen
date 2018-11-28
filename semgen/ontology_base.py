@@ -40,6 +40,17 @@ class OntologyHelper(object):
         OntologyHelper.global_aliases.update(cls.aliases())
 
 
+    @classmethod
+    def load_aliases(cls, file):
+        from os import environ
+        if environ.get('PYSEMGEN_NO_ALIASES') is None:
+            from json import load
+            with open(file,'r') as f:
+                aliases = load(f)
+            for a,id in aliases.items():
+                setattr(cls,a,cls.make_alias(id))
+
+
     @staticmethod
     def alias(uri):
         '''

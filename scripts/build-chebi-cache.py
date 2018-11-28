@@ -36,10 +36,14 @@ def legalize_name(name):
     result = '_'.join(result.split('@@'))
     result = '_'.join(filter(lambda x: x != '', result.split('@')))
     result = result.replace('@','_')
+    if result[0].isdigit():
+        result = '_'+result
     return result
 
 dash_cutoff = 10
 length_cutoff = 20
+
+aliases = {}
 
 with open(args.infile,'r') as f:
     compounds = csv.reader(f, delimiter='\t')
@@ -56,4 +60,10 @@ with open(args.infile,'r') as f:
         stars = int(row[9])
         if curated and parent_id is None and name is not None and stars >= 3 and len(name) < length_cutoff and name.count('-') < dash_cutoff:
             legalized_name = legalize_name(name)
-            print(id,name,legalized_name)
+            # print(id,name,legalized_name)
+            aliases[legalized_name] = id
+
+from os.path import join, dirname
+from json import dump
+with open(join(dirname(__file__),'..','semgen','cache','chebi.json'),'w') as f:
+    dump(aliases,f)
