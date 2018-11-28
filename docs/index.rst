@@ -57,33 +57,40 @@ Example usage:
     >>> model = loadsbml('BIOMD0000000012.xml')
     >>> print(model.get_turtle()) # show the model as turtle rdf
 
-To iterate through the entitires in a model
+To iterate through the entities in a model.
 
     >>> for e in model.physical_entities:
     ...    print(e.name, e.metaid, e.description)
+
+Model elements can also be accessed by name.
+
     >>> s = model.X
     >>> r = model.Reaction1
 
-    # add a term for X
-    print('three terms for X')
-    model.X.terms += 'http://identifiers.org/chebi/CHEBI:33700'
-    for relation,term in model.X.terms:
-        print('{}: {}'.format(relation, humanize(term)))
+You can iterate through annotations for a given element.
 
-    # clear the terms so we can add a different set
-    model.X.terms.clear()
-    # ontology helpers aliases for common substances
-    model.X.terms += ChEBI.messenger_RNA
-    # otherwise, pass the ontology term to the helper
-    model.X.terms += GO(5623) # expands to http://identifiers.org/obo.go/GO:0005623
-    # btw we do have a helper for this term, it's GO.cell
+    >>> # add a term for X
+    >>> model.X.terms += 'http://identifiers.org/chebi/CHEBI:33700'
+    >>> for relation,term in model.X.terms:
+    ...    print('{}: {}'.format(relation, humanize(term)))
 
-    # let's see what the new terms look like
-    print('terms for X (post)')
-    for relation,term in model.X.terms:
-        print('{}: {}'.format(relation, humanize(term)))
+To add new annotation terms, first clear the existing set, then add new terms as before.
 
-.. automodule:: pysemgen
+    >>> # clear the terms so we can add a different set
+    >>> model.X.terms.clear()
+    >>> # ontology helpers aliases for common substances
+    >>> model.X.terms += ChEBI.messenger_RNA
+    >>> # otherwise, pass the ontology term to the helper
+    >>> model.X.terms += GO(5623) # expands to http://identifiers.org/obo.go/GO:0005623
+    >>> # btw we do have a helper for this term, it's GO.cell
+
+Let's take a look at the new terms we added.
+
+    >>> print('terms for X (post)')
+    >>> for relation,term in model.X.terms:
+    ...    print('{}: {}'.format(relation, humanize(term)))
+
+.. automodule:: semgen
     :members:
 
 .. toctree::
