@@ -67,7 +67,9 @@ Model elements can also be accessed by name.
     >>> s = model.X
     >>> r = model.Reaction1
 
-You can iterate through annotations for a given element.
+The semantic annotations for a given element can be accessed via the `terms`
+property. New annotations can be added using += (using the bqb:is qualifier
+by default).
 
     >>> # add a term for X
     >>> model.X.terms += 'http://identifiers.org/chebi/CHEBI:33700'
