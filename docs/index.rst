@@ -41,11 +41,11 @@ we need to create a new entity with a separate annotation pointing to `FMA:9466 
 
     <.#entity_1> bqb:is <http://identifiers.org/fma/FMA:9466> .
 
-To install pysemgen:
+To install pysemgen::
 
     pip install pysemgen
 
-You will also need the SemGen jar containing the Py4J server. You can run the server with:
+You will also need the SemGen jar containing the Py4J server. You can run the server with::
 
     java -classpath SemSimAPI.jar semsim.Py4J
 
