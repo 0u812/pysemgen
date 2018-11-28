@@ -78,6 +78,8 @@ Example usage:
     for relation,term in model.X.terms:
         print('{}: {}'.format(relation, humanize(term)))
 
+.. automodule:: pysemgen
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
