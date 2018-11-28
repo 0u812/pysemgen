@@ -8,9 +8,18 @@ from os.path import dirname, realpath, join
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JError
 
-gateway = JavaGateway()
-semsim = gateway.jvm.semsim
-sslib = gateway.jvm.semsim.SemSimLibrary()
+gateway = None
+semsim = None
+sslib = None
+def init_gateway():
+    if gateway is not None:
+        return
+    global gateway
+    global semsim
+    global sslib
+    gateway = JavaGateway()
+    semsim = gateway.jvm.semsim
+    sslib = gateway.jvm.semsim.SemSimLibrary()
 
 class AnnotationWrapper(object):
     def __init__(self, component):
@@ -169,17 +178,20 @@ class ModelWrapper(object):
 
 
 def loadsbml(filename):
+    init_gateway()
     from os.path import abspath
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.SBMLreader(accessor).read())
 
 def loadcellml(filename):
+    init_gateway()
     from os.path import abspath
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.CellMLreader(accessor).read())
 
 def searchbp(term, ontology, n_results):
+    init_gateway()
     query_engine = semsim.utilities.webservices.BioPortalSearcher()
     return query_engine.search(sslib, term, ontology, n_results)
