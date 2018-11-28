@@ -4,10 +4,11 @@
    contain the root `toctree` directive.
 
 ############
-Semantic Annotations for Biological Models
+pysemgen
 ############
 
-Semantic Annotations
+
+Semantic Annotations for Biological Models
 ====================================
 
 This Python package is a `Py4J <https://www.py4j.org/>`_ wrapper for `SemGen <https://github.com/SemBioProcess/SemGen>`_, a
