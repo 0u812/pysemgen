@@ -10,7 +10,7 @@ Semantic Annotations for Biological Models
 Semantic Annotations
 ====================================
 
-This Python package is a `Py4J <>`_ wrapper for `SemGen <https://github.com/SemBioProcess/SemGen>`_, a
+This Python package is a `Py4J <https://www.py4j.org/>`_ wrapper for `SemGen <https://github.com/SemBioProcess/SemGen>`_, a
 package for annotating biological models with semantic information precisely describing the chemistry
 and physics behind a particular model. Usage of this software allows the math behind a model (differential equations
 and rates of change) to be traced back to the biology (what a particular variable represents - mRNA, protein, metabolite).
@@ -39,6 +39,44 @@ we need to create a new entity with a separate annotation pointing to `FMA:9466 
       bqb:is <http://identifiers.org/fma/FMA:9670> .
 
     <.#entity_1> bqb:is <http://identifiers.org/fma/FMA:9466> .
+
+To install pysemgen:
+
+    pip install pysemgen
+
+You will also need the SemGen jar containing the Py4J server. You can run the server with:
+
+    java -classpath SemSimAPI.jar semsim.Py4J
+
+Example usage:
+
+    from semgen import loadsbml, searchbp, humanize, ChEBI, GO
+    # from semgen.semgen import semsim
+    model = loadsbml('BIOMD0000000012.xml')
+    #print(model.get_turtle())
+    for e in model.physical_entities:
+        print(e.name, e.metaid, e.description)
+    s = model.X
+    r = model.Reaction1
+
+    # add a term for X
+    print('three terms for X')
+    model.X.terms += 'http://identifiers.org/chebi/CHEBI:33700'
+    for relation,term in model.X.terms:
+        print('{}: {}'.format(relation, humanize(term)))
+
+    # clear the terms so we can add a different set
+    model.X.terms.clear()
+    # ontology helpers aliases for common substances
+    model.X.terms += ChEBI.messenger_RNA
+    # otherwise, pass the ontology term to the helper
+    model.X.terms += GO(5623) # expands to http://identifiers.org/obo.go/GO:0005623
+    # btw we do have a helper for this term, it's GO.cell
+
+    # let's see what the new terms look like
+    print('terms for X (post)')
+    for relation,term in model.X.terms:
+        print('{}: {}'.format(relation, humanize(term)))
 
 .. toctree::
    :maxdepth: 2
