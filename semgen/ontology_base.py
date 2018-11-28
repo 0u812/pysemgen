@@ -41,6 +41,11 @@ class OntologyHelper(object):
 
 
     @classmethod
+    def update_aliases(cls,aliases_dict):
+        OntologyHelper.global_aliases.update(aliases_dict)
+
+
+    @classmethod
     def load_aliases(cls, file):
         from os import environ
         if environ.get('PYSEMGEN_NO_ALIASES') is None:

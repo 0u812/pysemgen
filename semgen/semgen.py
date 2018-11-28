@@ -2,24 +2,26 @@
 
 from __future__ import print_function, division, absolute_import
 
-from . import bqb
+from .bqb import bqb_is, bqb_isPartOf, bqb_isPropertyOf
 
-from os.path import dirname, realpath, join
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JError
 
-gateway = None
-semsim = None
-sslib = None
+from os.path import dirname, realpath, join
+from inspect import isclass
+
 def init_gateway():
-    if gateway is not None:
-        return
     global gateway
     global semsim
     global sslib
+    if gateway is not None:
+        return
     gateway = JavaGateway()
     semsim = gateway.jvm.semsim
     sslib = gateway.jvm.semsim.SemSimLibrary()
+gateway = None
+semsim = None
+sslib = None
 
 class AnnotationWrapper(object):
     def __init__(self, component):
@@ -43,7 +45,7 @@ class AnnotationWrapper(object):
                 try:
                     # see if it's a ReferenceTerm
                     # if it is, then we use the bqb:is qualifier
-                    yield (bqb.bqb_is, entity.getPhysicalDefinitionURI().toString())
+                    yield (bqb_is(entity.getPhysicalDefinitionURI().toString()))
                 except Py4JError:
                     for a in entity.getAnnotations():
                         yield (a.getRelation().toString(), a.getValue()) # TODO: how to get the uri for a relation?
@@ -56,9 +58,21 @@ class AnnotationWrapper(object):
         self.component.clearPhysicalEntities()
 
 
-    def __iadd__(self, uri, desc=''):
+    def __iadd__(self, term, desc=''):
         # does this also need to be added to the model?
-        self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(uri),desc))
+        if isclass(term):
+            raise TypeError('Attempted to add a class to the list of terms, expected an instance instead')
+        if term == bqb_is:
+            self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(term.resource_uri),desc))
+        elif term == bqb_isPartOf:
+            pass
+        elif term == bqb_isPropertyOf:
+            pass
+        elif isinstance(term, str):
+            # assume it's a uri for an ontology term
+                self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(term),desc))
+        else:
+            raise TypeError('No rule for term or relation {}'.format(term))
 
 
 

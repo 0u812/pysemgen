@@ -21,7 +21,7 @@ proteins can be traced back to their respective entries in the `Protein Ontology
 This type of auditing is quite common for curated model repositories such as `BioModels <https://www.ebi.ac.uk/biomodels-main/>`_. However, a crucial feature of SemGen is support new and more expressive types
 of annotations. Consider the following not unlikely scenario based on a model by `Smith, Chase, Nokes, Shaw and Wake (2004) <https://models.physiomeproject.org/exposure/f629920d520a0ea9f51dbde8754470da>`_.
 The model describes blood flow in the four chambers of the heart.
-This process can be described by annotating the model element for blood with `FMA:9670 https://www.ebi.ac.uk/ols/ontologies/fma/terms?obo_id=FMA:9670`_.
+This process can be described by annotating the model element for blood with `FMA:9670 <https://www.ebi.ac.uk/ols/ontologies/fma/terms?obo_id=FMA:9670>`_.
 However, in order to describe the physical location of the element for bloody (say, the left ventricle),
 we need to create a new entity with a separate annotation pointing to `FMA:9466 (left ventricle) <https://www.ebi.ac.uk/ols/ontologies/fma/terms?obo_id=FMA:9466>`_. SemGen accomplishes this with the following *composite annotation*:
 

@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-setup(name='semgen',
+setup(name='pysemgen',
       version='0.1.0',
       description='Annotation software for SBML / CellML models',
       author='J. Kyle Medley',
