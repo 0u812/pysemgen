@@ -50,7 +50,7 @@ You will also need the SemGen jar containing the Py4J server. You can run the se
 
 Example usage:
 
-::
+.. runblock:: pycon
 
     from semgen import loadsbml, searchbp, humanize, ChEBI, GO
     # from semgen.semgen import semsim
