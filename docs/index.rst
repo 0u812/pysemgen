@@ -53,14 +53,16 @@ Example usage:
 
 .. runblock:: pycon
 
-    from semgen import loadsbml, searchbp, humanize, ChEBI, GO
-    # from semgen.semgen import semsim
-    model = loadsbml('BIOMD0000000012.xml')
-    #print(model.get_turtle())
-    for e in model.physical_entities:
-        print(e.name, e.metaid, e.description)
-    s = model.X
-    r = model.Reaction1
+    >>> from semgen import loadsbml, searchbp, humanize, ChEBI, GO
+    >>> model = loadsbml('BIOMD0000000012.xml')
+    >>> print(model.get_turtle()) # show the model as turtle rdf
+
+To iterate through the entitires in a model
+
+    >>> for e in model.physical_entities:
+    ...    print(e.name, e.metaid, e.description)
+    >>> s = model.X
+    >>> r = model.Reaction1
 
     # add a term for X
     print('three terms for X')
