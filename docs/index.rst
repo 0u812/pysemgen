@@ -81,6 +81,7 @@ Example usage:
         print('{}: {}'.format(relation, humanize(term)))
 
 .. automodule:: pysemgen
+    :members:
 
 .. toctree::
    :maxdepth: 2
