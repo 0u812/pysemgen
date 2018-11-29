@@ -48,7 +48,7 @@ extensions = [
 ]
 
 apidoc_module_dir = '../semgen'
-apidoc_output_dir = 'reference'
+# apidoc_output_dir = 'reference'
 # apidoc_excluded_paths = ['tests']
 apidoc_separate_modules = True
 
