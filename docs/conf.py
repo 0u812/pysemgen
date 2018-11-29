@@ -42,9 +42,15 @@ release = ''
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.autosummary',
+    # 'sphinx.ext.autosummary',
+    'sphinxcontrib.apidoc',
     'sphinx_autorun',
 ]
+
+apidoc_module_dir = '../semgen'
+apidoc_output_dir = 'reference'
+# apidoc_excluded_paths = ['tests']
+apidoc_separate_modules = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
