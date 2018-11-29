@@ -13,10 +13,9 @@ Semantic Annotations for Biological Models
 
 Is the module below?
 
-.. autosummary::
-   :toctree: _autosummary
-
-   semgen
+.. automodule:: semgen
+    :members:
+    :undoc-members:
 
 Is the module above?
 
