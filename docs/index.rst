@@ -92,6 +92,7 @@ Let's take a look at the new terms we added.
 
 .. automodule:: semgen
     :members:
+    :undoc-members:
 
 .. toctree::
    :maxdepth: 2
