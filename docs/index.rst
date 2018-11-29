@@ -11,6 +11,10 @@ pysemgen
 Semantic Annotations for Biological Models
 ====================================
 
+.. automodule:: doit
+    :members:
+    :undoc-members:
+
 This Python package is a `Py4J <https://www.py4j.org/>`_ wrapper for `SemGen <https://github.com/SemBioProcess/SemGen>`_, a
 package for annotating biological models with semantic information precisely describing the chemistry
 and physics behind a particular model. Usage of this software allows the math behind a model (differential equations
@@ -89,10 +93,6 @@ Let's take a look at the new terms we added.
     >>> print('terms for X (post)')
     >>> for relation,term in model.X.terms:
     ...    print('{}: {}'.format(relation, humanize(term)))
-
-.. automodule:: semgen
-    :members:
-    :undoc-members:
 
 .. toctree::
    :maxdepth: 2
