@@ -13,7 +13,7 @@ Semantic Annotations for Biological Models
 
 Is the module below?
 
-.. automodule:: doit
+.. automodule:: semgen
     :members:
     :undoc-members:
 
