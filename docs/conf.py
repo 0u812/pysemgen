@@ -30,7 +30,7 @@ release = ''
 
 import os
 if os.environ.get('READTHEDOCS') == 'True':
-        os.environ['PYSEMGEN_NO_ALIASES'] = 1
+        os.environ['PYSEMGEN_NO_ALIASES'] = '1'
 
 
 # -- General configuration ---------------------------------------------------
