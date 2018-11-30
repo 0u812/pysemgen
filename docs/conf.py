@@ -43,7 +43,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     # 'sphinx.ext.autosummary',
-    'sphinxcontrib.apidoc',
+    # 'sphinxcontrib.apidoc',
     'sphinx_autorun',
 ]
 
