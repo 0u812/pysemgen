@@ -34,7 +34,6 @@ ChEBI.load_aliases(join(dirname(__file__),'cache','chebi.json'))
 ChEBI.register_aliases()
 
 
-# Herbert accessibility features
 chebi = ChEBI
 
 CHEBI = ChEBI

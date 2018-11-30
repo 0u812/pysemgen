@@ -4,4 +4,5 @@ __pycache__
 .mypy_cache
 *.kate-swp
 /docs/_build
+/docs/reference
 *.pyc

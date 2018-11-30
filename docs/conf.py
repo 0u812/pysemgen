@@ -28,6 +28,10 @@ version = ''
 # The full version, including alpha/beta/rc tags
 release = ''
 
+import os
+if os.environ.get('READTHEDOCS') == 'True':
+        os.environ['PYSEMGEN_NO_ALIASES'] = 1
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -49,9 +53,11 @@ extensions = [
 
 apidoc_module_dir = '../semgen'
 # apidoc_output_dir = 'reference'
-apidoc_output_dir = 'reference/api'
+apidoc_output_dir = 'reference'
 # apidoc_excluded_paths = ['tests']
-apidoc_separate_modules = True
+apidoc_separate_modules = False
+# apidoc_toc_file = True
+# apidoc_extra_args = ['--no-headings']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -86,7 +92,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+# html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
