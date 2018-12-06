@@ -41,6 +41,9 @@ we need to create a new entity with a separate annotation pointing to `FMA:9466 
 
     <.#entity_1> bqb:is <http://identifiers.org/fma/FMA:9466> .
 
+Installing
+==========
+
 To install pysemgen::
 
     pip install pysemgen
@@ -49,6 +52,9 @@ You will also need the SemGen jar containing the Py4J server. You can run the se
 
     java -classpath SemSimAPI.jar semsim.Py4J
 
+Quickstart
+==========
+
 Example usage:
 
 .. runblock:: pycon
@@ -56,11 +62,22 @@ Example usage:
     >>> import semgen
     >>> print(semgen.__version__)
 
-Usage:
+PySemgen supports loading SBML models with :meth:`semgen.load_sbml_file`, :meth:`semgen.load_sbml_str`. CellML models can be loaded with :meth:`semgen.load_cellml_file`, :meth:`semgen.load_cellml_str`. `Antimony <http://antimony.sourceforge.net/>`_ is a human-readable abstraction of SBML. If it is installed as a Python package, the function :meth:`semgen.load_antimony_str` can be used to load an Antimony string directly. Once a model is loaded, one can iterate through the physical entities present in the model.
 
-    >>> from semgen import loadsbml, searchbp, humanize, ChEBI, GO
-    >>> model = load_sbml_file('BIOMD0000000012.xml')
-    >>> print(model.get_turtle()) # show the model as turtle rdf
+.. runblock:: pycon
+
+    >>> from semgen import (load_antimony_str
+    >>> model = load_antimony_str('''
+    ... model mymodel
+    ...    const compartment cell_comp
+    ...    var species ATP in cell_comp, ADP in cell_comp
+    ...    J0: ATP -> ADP; k*ATP
+    ...    k = 1
+    ...    ATP = 1
+    ... end
+    ... ''')
+    >>> for e in model.physical_entities:
+    ...    print(e.name, e.metaid, e.description)
 
 To iterate through the entities in a model.
 
