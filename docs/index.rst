@@ -66,7 +66,7 @@ PySemgen supports loading SBML models with :meth:`semgen.load_sbml_file`, :meth:
 
 .. runblock:: pycon
 
-    >>> from semgen import (load_antimony_str
+    >>> from semgen import load_antimony_str
     >>> model = load_antimony_str('''
     ... model mymodel
     ...    const compartment cell_comp
