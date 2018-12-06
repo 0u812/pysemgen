@@ -1,6 +1,10 @@
 from __future__ import print_function, division, absolute_import
 
+from .semgen import version as semgen__version
+
 exclude = frozenset(locals()) & {'exclude'}
+
+__version__ = semgen__version
 
 from .semgen import DataStructureWrapper, ModelWrapper
 from .semgen import loadsbml, loadcellml, searchbp
@@ -26,6 +30,10 @@ from .bqb import (
 from .chebi import ChEBI, chebi, CHEBI
 
 from .go import GO
+
+from .opb import OPB
+
+from .fma import FMA
 
 # why? because autodoc is a pos
 __all__ = [s for s in list(locals()) if not s in exclude]

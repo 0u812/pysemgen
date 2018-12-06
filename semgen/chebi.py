@@ -13,6 +13,7 @@ class ChEBI(OntologyHelper):
     '''
     Ontology helper for Chemical Entities of Biological Interest (ChEBI).
     '''
+    base_uri = root
 
     def __new__(cls, n):
         return make_chebi(n)

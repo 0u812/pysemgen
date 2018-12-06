@@ -12,16 +12,23 @@ from inspect import isclass
 
 def init_gateway():
     global gateway
+    global java
     global semsim
+    global version
     global sslib
     if gateway is not None:
         return
     gateway = JavaGateway()
+    java = gateway.jvm.java
     semsim = gateway.jvm.semsim
-    sslib = gateway.jvm.semsim.SemSimLibrary()
+    version = semsim.SemSimLibrary.SEMSIM_VERSION
+    sslib = semsim.SemSimLibrary()
 gateway = None
+java = None
 semsim = None
 sslib = None
+version = None
+init_gateway()
 
 class AnnotationWrapper(object):
     def __init__(self, component):
@@ -63,14 +70,14 @@ class AnnotationWrapper(object):
         if isclass(term):
             raise TypeError('Attempted to add a class to the list of terms, expected an instance instead')
         if term == bqb_is:
-            self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(term.resource_uri),desc))
+            self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(term.resource_uri),desc))
         elif term == bqb_isPartOf:
             pass
         elif term == bqb_isPropertyOf:
             pass
         elif isinstance(term, str):
             # assume it's a uri for an ontology term
-                self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(gateway.jvm.java.net.URI(term),desc))
+                self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(term),desc))
         else:
             raise TypeError('No rule for term or relation {}'.format(term))
 
@@ -97,6 +104,18 @@ class DataStructureWrapper:
     @property
     def metaid(self):
         return self.datastructure.getAssociatedPhysicalModelComponent().getMetadataID()
+
+
+    def setPhysicalProperty(self, term_uri, entity_uris, desc=''):
+        p = semsim.model.physical.object.PhysicalPropertyInComposite(desc, java.net.URI(term_uri))
+        entities = gateway.jvm.java.util.ArrayList()
+        for uri,entity_desc in entity_uris.items():
+            entities.add(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(uri), entity_desc))
+        relations = gateway.jvm.java.util.ArrayList()
+        for n in range(len(entity_uris)-1):
+            relations.add(semsim.definitions.SemSimRelations.StructuralRelation.BQB_IS_PART_OF)
+        composite = semsim.model.physical.object.CompositePhysicalEntity(entities, relations)
+        self.datastructure.setAssociatedPhysicalModelComponent(composite)
 
 
     # @property

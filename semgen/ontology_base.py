@@ -23,6 +23,7 @@ def format_term(term, base_uri, width):
 
 class OntologyHelper(object):
     global_aliases = {}
+    registered_ontologies = {}
 
     @classmethod
     def aliases(cls):
@@ -38,6 +39,7 @@ class OntologyHelper(object):
     @classmethod
     def register_aliases(cls):
         OntologyHelper.global_aliases.update(cls.aliases())
+        OntologyHelper.registered_ontologies[cls.base_uri] = cls.__name__
 
 
     @classmethod
@@ -64,10 +66,18 @@ class OntologyHelper(object):
         '''
         if uri in OntologyHelper.global_aliases:
             return OntologyHelper.global_aliases[uri]
-        return uri
+        else:
+            for ontology,name in OntologyHelper.registered_ontologies.items():
+                if uri.startswith(ontology):
+                    return '{}({})'.format(name, uri.replace(ontology,''))
+            return uri
 
-def humanize(uri):
+def humanize(t):
     '''
     Substitutes an alias for the URI if one exists.
     '''
-    return OntologyHelper.alias(uri)
+    from .biomodels_quals import Relation
+    if isinstance(t, Relation):
+        return ' '.join((humanize(t.relation_uri), humanize(t.resource_uri)))
+    else:
+        return OntologyHelper.alias(t)

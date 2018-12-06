@@ -13,6 +13,7 @@ class GO(OntologyHelper):
     '''
     Ontology helper for the Gene Ontology (GO).
     '''
+    base_uri = root
 
     def __new__(cls, n):
         return make_go(n)
