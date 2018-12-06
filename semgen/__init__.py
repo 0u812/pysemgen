@@ -7,7 +7,11 @@ exclude = frozenset(locals()) & {'exclude'}
 __version__ = semgen__version
 
 from .semgen import DataStructureWrapper, ModelWrapper
-from .semgen import loadsbml, loadcellml, searchbp
+from .semgen import (
+    load_sbml_file, load_sbml_str,
+    load_cellml_file, load_cellml_str,
+    load_antimony_str,
+    searchbp)
 
 from .ontology_base import humanize
 

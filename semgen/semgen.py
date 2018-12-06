@@ -109,13 +109,27 @@ class DataStructureWrapper:
     def setPhysicalProperty(self, term_uri, entity_uris, desc=''):
         p = semsim.model.physical.object.PhysicalPropertyInComposite(desc, java.net.URI(term_uri))
         entities = gateway.jvm.java.util.ArrayList()
-        for uri,entity_desc in entity_uris.items():
-            entities.add(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(uri), entity_desc))
+        if isinstance(entity_uris, dict):
+            for uri,entity_desc in entity_uris.items():
+                entities.add(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(uri), entity_desc))
+        else:
+            # not a mapping type, just a uri container
+            # no descriptions
+            for uri in entity_uris:
+                entities.add(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(uri), ''))
         relations = gateway.jvm.java.util.ArrayList()
         for n in range(len(entity_uris)-1):
             relations.add(semsim.definitions.SemSimRelations.StructuralRelation.BQB_IS_PART_OF)
         composite = semsim.model.physical.object.CompositePhysicalEntity(entities, relations)
         self.datastructure.setAssociatedPhysicalModelComponent(composite)
+
+
+    def __iter__(self):
+        return iter(self.terms)
+
+
+    def __iadd__(self, term, desc=''):
+        return self.terms.__iadd__(term,desc)
 
 
     # @property
@@ -210,19 +224,94 @@ class ModelWrapper(object):
 
 
 
-def loadsbml(filename):
+def load_sbml_file(filename):
+    '''
+    Loads an SBML model from a file.
+
+    Args:
+        filename (str): The name of the file to load.
+
+    Returns:
+        ModelWrapper: A SemSim model constructed from the SBML model.
+    '''
     init_gateway()
     from os.path import abspath
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.SBMLreader(accessor).read())
 
-def loadcellml(filename):
+
+def load_sbml_str(sbml):
+    '''
+    Loads an SBML model from a string.
+
+    Args:
+        sbml (str): The raw SBML/XML content.
+
+    Returns:
+        ModelWrapper: A SemSim model constructed from the SBML model.
+    '''
+    init_gateway()
+    accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessorForString(sbml, semsim.reading.ModelClassifier.ModelType.SBML_MODEL)
+    return ModelWrapper(semsim.reading.SBMLreader(accessor).read())
+
+
+def load_antimony_str(sb_string):
+    '''
+    Loads an SBML model from an Antimony string. Antimony must be installed.
+
+    Args:
+        sbml (str): An Antimony string.
+
+    Returns:
+        ModelWrapper: A SemSim model constructed from the SBML model.
+    '''
+    init_gateway()
+    import antimony as sb
+    # try to load the Antimony code`
+    code = sb.loadAntimonyString(sb_string)
+
+    # if errors, bail
+    if code < 0:
+        errors = sb.getLastError()
+        raise RuntimeError('Errors encountered when trying to load model:\n{}'.format(errors))
+
+    module   = sb.getMainModuleName()
+    sbml     = sb.getSBMLString(module)
+    return load_sbml_str(sbml)
+
+
+def load_cellml_file(filename):
+    '''
+    Loads a CellML model from a file.
+
+    Args:
+        filename (str): The name of the file to load.
+
+    Returns:
+        ModelWrapper: A SemSim model constructed from the CellML model.
+    '''
     init_gateway()
     from os.path import abspath
     java_file = gateway.jvm.java.io.File(abspath(filename))
     accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessor(java_file)
     return ModelWrapper(semsim.reading.CellMLreader(accessor).read())
+
+
+def load_cellml_str(cellml):
+    '''
+    Loads a CellML model from a file.
+
+    Args:
+        filename (str): The name of the file to load.
+
+    Returns:
+        ModelWrapper: A SemSim model constructed from the CellML model.
+    '''
+    init_gateway()
+    accessor = semsim.fileaccessors.FileAccessorFactory.getModelAccessorForString(sbml)
+    return ModelWrapper(semsim.reading.CellMLreader(accessor).read())
+
 
 def searchbp(term, ontology, n_results):
     init_gateway()

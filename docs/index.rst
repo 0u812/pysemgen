@@ -52,7 +52,7 @@ You will also need the SemGen jar containing the Py4J server. You can run the se
 Example usage:
 
     >>> from semgen import loadsbml, searchbp, humanize, ChEBI, GO
-    >>> model = loadsbml('BIOMD0000000012.xml')
+    >>> model = load_sbml_file('BIOMD0000000012.xml')
     >>> print(model.get_turtle()) # show the model as turtle rdf
 
 To iterate through the entities in a model.
