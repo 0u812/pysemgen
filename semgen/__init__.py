@@ -47,6 +47,6 @@ from .fma import FMA
 __all__ = [s for s in list(locals()) if not s in exclude]
 
 from atexit import register
-# @register
+@register
 def cleanup():
     semgenjar.cleanup()
