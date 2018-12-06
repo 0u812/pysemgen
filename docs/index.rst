@@ -51,6 +51,13 @@ You will also need the SemGen jar containing the Py4J server. You can run the se
 
 Example usage:
 
+.. runblock:: pycon
+
+    >>> import semgen
+    >>> print(semgen.__version__)
+
+Usage:
+
     >>> from semgen import loadsbml, searchbp, humanize, ChEBI, GO
     >>> model = load_sbml_file('BIOMD0000000012.xml')
     >>> print(model.get_turtle()) # show the model as turtle rdf
