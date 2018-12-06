@@ -2,6 +2,8 @@
 
 from __future__ import print_function, division, absolute_import
 
+import semgenjar
+
 from .semgen import version as semgen__version
 
 exclude = frozenset(locals()) & {'exclude'}
@@ -43,3 +45,8 @@ from .fma import FMA
 
 # why? because autodoc is a pos
 __all__ = [s for s in list(locals()) if not s in exclude]
+
+from atexit import register
+# @register
+def cleanup():
+    semgenjar.cleanup()
