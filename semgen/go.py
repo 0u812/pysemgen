@@ -20,6 +20,7 @@ class GO(OntologyHelper):
 
     # common terms
     cell = make_go(5623)
+    cytosol = make_go(5829)
 
 
 GO.register_aliases()

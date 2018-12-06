@@ -80,6 +80,7 @@ class AnnotationWrapper(object):
                 self.component.addPhysicalEntity(semsim.model.physical.object.ReferencePhysicalEntity(java.net.URI(term),desc))
         else:
             raise TypeError('No rule for term or relation {}'.format(term))
+        return self
 
 
 
@@ -129,7 +130,8 @@ class DataStructureWrapper:
 
 
     def __iadd__(self, term, desc=''):
-        return self.terms.__iadd__(term,desc)
+        self.terms.__iadd__(term,desc)
+        return self
 
 
     # @property
