@@ -55,16 +55,14 @@ You will also need the SemGen jar containing the Py4J server. You can run the se
 Quickstart
 ==========
 
-Example usage:
+The Python wrapper is versioned using the ``SemSimLibrary.SEMSIM_VERSION`` variable from the Java API.
 
 .. runblock:: pycon
 
     >>> import semgen
-    >>> print(semgen.__version__)
+    >>> print(semgen.__version__) # SemSimLibrary.SEMSIM_VERSION in Java
 
 PySemgen supports loading SBML models with :meth:`semgen.load_sbml_file`, :meth:`semgen.load_sbml_str`. CellML models can be loaded with :meth:`semgen.load_cellml_file`, :meth:`semgen.load_cellml_str`. `Antimony <http://antimony.sourceforge.net/>`_ is a human-readable abstraction of SBML. If it is installed as a Python package, the function :meth:`semgen.load_antimony_str` can be used to load an Antimony string directly. Once a model is loaded, one can iterate through the physical entities present in the model.
-
-.. runblock:: pycon
 
     >>> from semgen import load_antimony_str
     >>> model = load_antimony_str('''
@@ -86,33 +84,36 @@ To iterate through the entities in a model.
 
 Model elements can also be accessed by name.
 
-    >>> s = model.X
-    >>> r = model.Reaction1
+    >>> s = model.ATP
+    >>> r = model.J0
 
 The semantic annotations for a given element can be accessed via the `terms`
 property. New annotations can be added using += (using the bqb:is qualifier
 by default).
 
-    >>> # add a term for X
-    >>> model.X.terms += 'http://identifiers.org/chebi/CHEBI:33700'
-    >>> for relation,term in model.X.terms:
-    ...    print('{}: {}'.format(relation, humanize(term)))
+    >>> # clear existing terms for ATP and ADP
+    >>> model.ATP.terms.clear()
+    >>> model.ADP.terms.clear()
+    >>> # now add new terms for the molecules
+    >>> from semgen import ChEBI, GO
+    >>> model.ATP += ChEBI(15422) # terms can be specified using the numeric ontology term
+    >>> model.ADP += ChEBI.ADP # can also use common name alias
+    >>> model.cell_comp += GO.cell
+    >>> # print out the updated definition uris for our model entities
+    >>> for e in model.physical_entities:
+    ...    print(e.name, e.metaid, e.description)
+    ...    for term in e:
+    ...        print('  ', term)
 
-To add new annotation terms, first clear the existing set, then add new terms as before.
+To specify physical properties (a type of composite annotation), locate the smith et al. model inside its `COMBINE archive <https://github.com/combine-org/Annotations/blob/master/nonstandardized/CellML/smith_chase_nokes_shaw_wake_2004.omex>`_ and then use ``setPhysicalProperty``.
 
-    >>> # clear the terms so we can add a different set
-    >>> model.X.terms.clear()
-    >>> # ontology helpers aliases for common substances
-    >>> model.X.terms += ChEBI.messenger_RNA
-    >>> # otherwise, pass the ontology term to the helper
-    >>> model.X.terms += GO(5623) # expands to http://identifiers.org/obo.go/GO:0005623
-    >>> # btw we do have a helper for this term, it's GO.cell
-
-Let's take a look at the new terms we added.
-
-    >>> print('terms for X (post)')
-    >>> for relation,term in model.X.terms:
-    ...    print('{}: {}'.format(relation, humanize(term)))
+    >>> model = load_cellml_file('smith_chase_nokes_shaw_wake_2004.omex/smith_chase_nokes_shaw_wake_2004.cellml')
+    >>> # set the physical property for the left ventricle
+    >>> model['left_ventricle.V_lv'].setPhysicalProperty(
+    ...    term_uri=OPB(154),
+    ...    entity_uris={FMA(9671): 'Portion of blood+1',
+    ...                 FMA(9292): 'Cavity of right ventricle+1'},
+    ...    desc='Fluid volume')
 
 API
 ==================
